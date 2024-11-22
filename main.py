@@ -10,12 +10,15 @@ conn = mysql.connector.connect(
 
 cursor = conn.cursor()
 
-# Выполнение запроса (например, выбор всех баз данных)
-cursor.execute("SELECT * FROM users")
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS people (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100),
+        age INT,
+        height INT
+    )
+""")
 
-# Выводим результат
-for db in cursor:
-    print(db)
 
 # Закрываем соединение
 cursor.close()
