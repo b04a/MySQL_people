@@ -19,7 +19,24 @@ cursor.execute("""
     )
 """)
 
+name = input("Input name people: ").split()
+age = input("Input age people: ").split()
+height = input("Input height people: ").split()
 
-# Закрываем соединение
+for i in range(len(name)):
+    cursor.execute("""
+        INSERT INTO people (name, age, height) VALUES (%s, %s, %s)
+        """, (f"{name[i]}", int(age[i]), int(height[i])))
+
+
+# Подтверждение изменений
+conn.commit()
+
+# Выборка данных
+cursor.execute("SELECT * FROM people")
+for (id, name, age, height) in cursor:
+    print(f"ID: {id}, Name: {name}, Age: {age}, height: {height}")
+
+# Закрытие соединения
 cursor.close()
 conn.close()
