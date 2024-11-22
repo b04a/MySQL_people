@@ -1,6 +1,6 @@
 import mysql.connector
 
-# Подключение к базе данных SELECT * FROM users;
+# Подключение к базе данных
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -10,32 +10,30 @@ conn = mysql.connector.connect(
 
 cursor = conn.cursor()
 
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS people (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100),
-        age INT,
-        height INT
-    )
-""")
-
-name = input("Input name people: ").split()
-age = input("Input age people: ").split()
-height = input("Input height people: ").split()
-
-for i in range(len(name)):
-    cursor.execute("""
-        INSERT INTO people (name, age, height) VALUES (%s, %s, %s)
-        """, (f"{name[i]}", int(age[i]), int(height[i])))
-
-
-# Подтверждение изменений
-conn.commit()
-
 # Выборка данных
 cursor.execute("SELECT * FROM people")
 for (id, name, age, height) in cursor:
     print(f"ID: {id}, Name: {name}, Age: {age}, height: {height}")
+
+# Выполнение запроса на сумму возраста
+cursor.execute("""
+SELECT SUM(age) AS total_sum
+FROM people;
+""")
+
+# Получение результата запроса
+result = cursor.fetchone()  # Получаем первую строку результата
+total_sum = result[0] if result else 0  # Если результат пустой, возвращаем 0
+print(f"Total sum of ages: {total_sum}")
+
+cursor.execute("""
+SELECT AVG(height) AS average_value
+FROM people;
+""")
+
+result_height = cursor.fetchone()
+average_value = float(result_height[0]) if result_height else 0.0
+print(f"AVG by age people: {average_value}")
 
 # Закрытие соединения
 cursor.close()
